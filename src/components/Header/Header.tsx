@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Input, Button } from '@mui/material';  
+import { AppBar, Toolbar, Button, InputBase, IconButton, Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { headerLinks } from './constants/headerConstants'; 
+import { headerLinks } from './constants/headerConstants';
+import Link from 'next/link';
+import LoginButton from '../LoginForm/LoginForm';
 
-const Header: React.FC = ({ logoUrl, onSearch }) => {
+const Header: React.FC<{ logoUrl: string, onSearch: (query: string) => void }> = ({ logoUrl, onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -12,44 +14,42 @@ const Header: React.FC = ({ logoUrl, onSearch }) => {
   };
 
   return (
-    <header className="bg-gray-800 text-white py-4 px-8 flex items-center justify-between">
-      {/* Логотип */}
-      <div className="flex-shrink-0">
-        <img src={logoUrl} alt="Auto Logo" className="h-10" />
-      </div>
+    <AppBar position="sticky" sx={{ backgroundColor: 'gray', color: 'white' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ flexShrink: 0 }}>
+          <img src={logoUrl} alt="Auto Logo" style={{ height: '40px' }} />
+        </Box>
 
-      {/* Навигация */}
-      <nav className="flex-1">
-        <ul className="flex space-x-6 justify-center">
+        <Box sx={{ display: 'flex', justifyContent: 'center', flex: 1 }}>
           {headerLinks.map((link) => (
-            <li key={link.name}>
-              <a href={link.url} className="hover:text-gray-400 transition duration-200">
-                {link.name}
-              </a>
-            </li>
+            <Button key={link.name} sx={{ color: 'white', marginLeft: 2 }} href={link.url}>
+              {link.name}
+            </Button>
           ))}
-        </ul>
-      </nav>
+        </Box>
 
-      {/* Поиск */}
-      <div className="flex items-center space-x-2 border border-white rounded-full p-2 bg-white text-gray-800">
-        <Input
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Поиск автомобилей"
-          disableUnderline
-          fullWidth
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onSearch(searchQuery)}
-          startIcon={<SearchIcon />}
-        >
-          Найти
-        </Button>
-      </div>
-    </header>
+        <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: '20px', padding: '5px' }}>
+          <InputBase
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Поиск автомобилей"
+            sx={{ flex: 1, paddingLeft: 1 }}
+          />
+          <IconButton onClick={() => onSearch(searchQuery)} sx={{ padding: '10px' }}>
+            <SearchIcon />
+          </IconButton>
+        </Box>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 2 }}>
+          <LoginButton />
+          <Link href="/registration" passHref>
+            <Button variant="contained" color="secondary">
+              Регистрация
+            </Button>
+          </Link>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 
